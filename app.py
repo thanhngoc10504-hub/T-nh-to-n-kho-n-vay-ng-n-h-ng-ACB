@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+st.image("logo.jpg.jfif")
 # Cấu hình trang và Branding (Thêm tên ngân hàng "AÇB" vào đây)
 st.set_page_config(page_title="AÇB - Công Cụ Vay", page_icon="🏦")
 st.markdown("# 🏦 AÇB")
