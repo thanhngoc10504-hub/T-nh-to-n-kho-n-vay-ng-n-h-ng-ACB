@@ -3,9 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# ==========================
+# ======================
 # CẤU HÌNH TRANG
-# ==========================
+# ======================
 
 st.set_page_config(
     page_title="Công cụ tính khoản vay",
@@ -13,9 +13,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# ==========================
+# ======================
 # LOGO
-# ==========================
+# ======================
 
 if os.path.exists("logo2.jpg.jfif"):
     st.image("logo2.jpg.jfif", width=180)
@@ -25,48 +25,33 @@ st.subheader("Đề tài 3")
 
 st.divider()
 
-# ==========================
-# NHẬP DỮ LIỆU
-# ==========================
+# ======================
+# NHẬP THÔNG TIN
+# ======================
 
 col1, col2 = st.columns(2)
 
 with col1:
 
     so_tien_vay = st.number_input(
-
         "💵 Số tiền vay (VNĐ)",
-
         min_value=1,
-
         value=150_000_000,
-
         step=1_000_000,
-
         format="%d"
-
     )
 
     so_thang_vay = st.number_input(
-
         "📅 Thời hạn vay (tháng)",
-
         min_value=1,
-
         value=12
-
     )
 
     lai_suat_nam = st.number_input(
-
         "📈 Lãi suất (%/năm)",
-
         min_value=0.0,
-
         value=12.0,
-
         step=0.1
-
     )
 
 with col2:
@@ -109,75 +94,47 @@ with col2:
 
     )
 
-st.divider()
-
-# ==========================
+# ======================
 # NÚT TÍNH TOÁN
-# ==========================
+# ======================
 
 if st.button("🚀 Tính toán", use_container_width=True):
 
     if muc_dich == "-- Chọn mục đích --":
 
-        st.warning(
-
-            "⚠️ Vui lòng chọn mục đích vay."
-
-        )
+        st.warning("⚠️ Vui lòng chọn mục đích vay.")
 
     else:
 
-        lai_suat_thang = (
+        lai_suat_thang = lai_suat_nam / 100 / 12
 
-            lai_suat_nam / 100 / 12
-
-        )
-
-        goc_hang_thang = (
-
-            so_tien_vay /
-
-            so_thang_vay
-
-        )
-
-        data = []
+        goc_hang_thang = so_tien_vay / so_thang_vay
 
         tong_lai = 0
 
-        # ==========================
+        data = []
+
+        # ======================
         # DƯ NỢ GỐC
-        # ==========================
+        # ======================
 
         if phuong_thuc == "Lãi theo dư nợ GỐC (cố định)":
 
-            lai_hang_thang = (
-
-                so_tien_vay *
-
-                lai_suat_thang
-
-            )
+            lai_co_dinh = so_tien_vay * lai_suat_thang
 
             du_no = so_tien_vay
 
-            for thang in range(
-
-                1,
-
-                so_thang_vay + 1
-
-            ):
+            for thang in range(1, so_thang_vay + 1):
 
                 tong_thang = (
 
                     goc_hang_thang +
 
-                    lai_hang_thang
+                    lai_co_dinh
 
                 )
 
-                tong_lai += lai_hang_thang
+                tong_lai += lai_co_dinh
 
                 du_no -= goc_hang_thang
 
@@ -185,47 +142,27 @@ if st.button("🚀 Tính toán", use_container_width=True):
 
                     "Tháng": thang,
 
-                    "Gốc trả":
+                    "Gốc trả (VNĐ)": round(goc_hang_thang),
 
-                        round(goc_hang_thang),
+                    "Lãi trả (VNĐ)": round(lai_co_dinh),
 
-                    "Lãi trả":
+                    "Tổng trả (VNĐ)": round(tong_thang),
 
-                        round(lai_hang_thang),
-
-                    "Tổng trả":
-
-                        round(tong_thang),
-
-                    "Dư nợ còn lại":
-
-                        round(max(du_no,0))
+                    "Dư nợ còn lại (VNĐ)": round(max(du_no, 0))
 
                 })
 
-        # ==========================
+        # ======================
         # DƯ NỢ GIẢM DẦN
-        # ==========================
+        # ======================
 
         else:
 
             du_no = so_tien_vay
 
-            for thang in range(
+            for thang in range(1, so_thang_vay + 1):
 
-                1,
-
-                so_thang_vay + 1
-
-            ):
-
-                lai_thang = (
-
-                    du_no *
-
-                    lai_suat_thang
-
-                )
+                lai_thang = du_no * lai_suat_thang
 
                 tong_thang = (
 
@@ -243,41 +180,49 @@ if st.button("🚀 Tính toán", use_container_width=True):
 
                     "Tháng": thang,
 
-                    "Gốc trả":
+                    "Gốc trả (VNĐ)": round(goc_hang_thang),
 
-                        round(goc_hang_thang),
+                    "Lãi trả (VNĐ)": round(lai_thang),
 
-                    "Lãi trả":
+                    "Tổng trả (VNĐ)": round(tong_thang),
 
-                        round(lai_thang),
-
-                    "Tổng trả":
-
-                        round(tong_thang),
-
-                    "Dư nợ còn lại":
-
-                        round(max(du_no,0))
+                    "Dư nợ còn lại (VNĐ)": round(max(du_no, 0))
 
                 })
 
-        tong_tra = (
-
-            so_tien_vay +
-
-            tong_lai
-
-        )
+        tong_tra = so_tien_vay + tong_lai
 
         df = pd.DataFrame(data)
 
-        # ==========================
+        # ======================
         # KPI
-        # ==========================
+        # ======================
 
-        st.subheader(
+        st.subheader("📋 Kết quả")
 
-            "📋 Kết quả phân tích"
+        k1, k2, k3 = st.columns(3)
+
+        k1.metric(
+
+            "💵 Tổng khoản vay",
+
+            f"{so_tien_vay:,.0f}"
+
+        )
+
+        k2.metric(
+
+            "🏦 Tổng lãi",
+
+            f"{tong_lai:,.0f}"
+
+        )
+
+        k3.metric(
+
+            "💰 Tổng thanh toán",
+
+            f"{tong_tra:,.0f}"
 
         )
 
@@ -286,34 +231,6 @@ if st.button("🚀 Tính toán", use_container_width=True):
             f"**🎯 Mục đích vay:** {muc_dich}"
 
         )
-
-        k1, k2, k3 = st.columns(3)
-
-        k1.metric(
-
-            "💰 Tổng khoản vay",
-
-            f"{so_tien_vay:,.0f} VNĐ"
-
-        )
-
-        k2.metric(
-
-            "🏦 Tổng tiền lãi",
-
-            f"{tong_lai:,.0f} VNĐ"
-
-        )
-
-        k3.metric(
-
-            "📊 Tổng thanh toán",
-
-            f"{tong_tra:,.0f} VNĐ"
-
-        )
-
-        st.divider()
 
         st.dataframe(
 
@@ -325,57 +242,35 @@ if st.button("🚀 Tính toán", use_container_width=True):
 
         )
 
-        # ==========================
+        # ======================
         # BIỂU ĐỒ
-        # ==========================
+        # ======================
 
-        fig, ax = plt.subplots(
-
-            figsize=(10,5)
-
-        )
+        fig, ax = plt.subplots()
 
         ax.plot(
 
             df["Tháng"],
 
-            df["Tổng trả"],
+            df["Tổng trả (VNĐ)"],
 
             marker='o'
 
         )
 
-        ax.set_title(
+        ax.set_xlabel("Tháng")
 
-            "Biến động số tiền trả theo tháng"
-
-        )
-
-        ax.set_xlabel(
-
-            "Tháng"
-
-        )
-
-        ax.set_ylabel(
-
-            "VNĐ"
-
-        )
+        ax.set_ylabel("VNĐ")
 
         ax.grid(True)
 
         st.pyplot(fig)
 
-        # ==========================
+        # ======================
         # DOWNLOAD CSV
-        # ==========================
+        # ======================
 
-        csv = df.to_csv(
-
-            index=False
-
-        )
+        csv = df.to_csv(index=False)
 
         st.download_button(
 
@@ -383,14 +278,14 @@ if st.button("🚀 Tính toán", use_container_width=True):
 
             csv,
 
-            "lich_tra_no.csv",
+            file_name="lich_tra_no.csv",
 
-            "text/csv"
+            mime="text/csv"
 
         )
 
         st.success(
 
-            f"✅ Tổng số tiền phải thanh toán sau {so_thang_vay} tháng là: {tong_tra:,.0f} VNĐ"
+            f"✅ Tổng số tiền phải trả: {tong_tra:,.0f} VNĐ"
 
         )
