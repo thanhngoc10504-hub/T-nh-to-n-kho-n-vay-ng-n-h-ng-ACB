@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-st.image("logo.jpg.jfif")
+st.image("logo2.jpg.jfif")
 
-st.subheader("💰 Công Cụ Tính Khoản Vay")
+st.subheader("💰 Công Cụ Tính Khoản Vay_Đề tài 3")
 
 # --- PHẦN NHẬP LIỆU (ĐÃ BỔ SUNG MỤC ĐÍCH VAY) ---
 col1, col2 = st.columns(2)
